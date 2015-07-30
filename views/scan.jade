@@ -3,5 +3,12 @@ extends layout
 block content
   .page-header
     h3 Scan
-
-  a.scan_btn.btn.btn-lg.btn-success Scan
+  form(method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .clearfix
+      .row
+        .col-sm-4
+          .form-group
+            input.form-control(type='text', name='fileName', id='fileName', placeholder='File name', autofocus=true)
+    .form-group
+      button.scan_btn.btn.btn-lg.btn-success Scan

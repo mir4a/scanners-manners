@@ -118,6 +118,8 @@ app.get('/account/unlink/:provider', passportConf.isAuthenticated, userControlle
  * Scanner routes
  */
 app.get('/scan', scanController.index);
+app.post('/scan', scanController.scanImage);
+
 
 /**
  * API examples routes.

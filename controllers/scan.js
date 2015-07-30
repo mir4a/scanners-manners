@@ -13,8 +13,8 @@ exports.index = function (req, res) {
   });
 };
 
-exports.convertImage = function(imageName, imageFormat) {
-  imageMagick.convert([encodeURIComponent(imageName) + '.' + imageFormat, encodeURIComponent(imageName) + '.jpg'], function (err, data) {
+exports.convertImage = function(res,imageName) {
+  imageMagick.convert([encodeURIComponent(imageName) + '.pnm', encodeURIComponent(imageName) + '.jpg'], function (err, data) {
     if (err) throw err;
 
     res.send(data);
@@ -27,13 +27,13 @@ exports.scanImage = function (req, res, cb) {
 
   var fileName = req.body.fileName || 'testFileName';
 
-  var filePath = encodeURIComponent(fileName) + '.tiff';
+  var filePath = encodeURIComponent(fileName) + '.pnm';
 
 
 
 
   exec(
-      'scanimage --mode=Color --resolution=300 -p --format=tiff > ' + filePath,
+      'scanimage --mode=Color --resolution=300 -p  > ' + filePath,
       function (error, stdout, stderr) {
         if (error) {
           console.log('!!!!!!error!!!!!');
@@ -49,7 +49,7 @@ exports.scanImage = function (req, res, cb) {
         }
 
 
-        exports.convertImage(fileName, 'tiff');
+        exports.convertImage(res,fileName);
 
 
       }

@@ -3,12 +3,16 @@ extends layout
 block content
   .page-header
     h3 Scan
-  form(method='POST')
+  form(method='POST' id='scan_form')
     input(type='hidden', name='_csrf', value=_csrf)
     .clearfix
       .row
         .col-sm-4
           .form-group
             input.form-control(type='text', name='fileName', id='fileName', placeholder='File name', autofocus=true)
+            p.help-block(style='display:none')
+              | Please, use only alphabetical chars, numbers dash and underscore (a-z 0-9 - _ )
     .form-group
-      button.scan_btn.btn.btn-lg.btn-success Scan
+      button.scan_btn.btn.btn-lg.btn-success#scan_btn Scan
+
+  ul#result.list-group

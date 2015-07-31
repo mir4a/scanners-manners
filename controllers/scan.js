@@ -14,10 +14,11 @@ exports.index = function (req, res) {
 };
 
 exports.convertImage = function(res,imageName) {
-  imageMagick.convert([encodeURIComponent(imageName) + '.pnm', encodeURIComponent(imageName) + '.jpg'], function (err, data) {
+  imageMagick.convert([encodeURIComponent(imageName) + '.pnm', encodeURIComponent(imageName) + '.jpg'],
+      function (err, stdout, stderr) {
     if (err) throw err;
 
-    res.send(data);
+    res.send(stderr);
 
   });
 

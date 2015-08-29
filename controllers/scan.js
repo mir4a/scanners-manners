@@ -1,4 +1,5 @@
 var exec = require('child_process').exec,
+    spawn = require('child_process').spawn,
     fs = require('fs'),
     imageMagick = require('imagemagick');
     imageMagick.convert.path = '/usr/local/bin/convert';
@@ -30,30 +31,24 @@ exports.scanImage = function (req, res, cb) {
 
   var filePath = encodeURIComponent(fileName) + '.pnm';
 
+  var writeStream = fs.createWriteStream(filePath);
 
+  var scan = spawn('scanimage', ['--mode=Color', '--resolution=300', '-p']);
 
+  scan.stdout.on('data', function (data) {
+    //console.log('stdout: ' + data);
+    writeStream.write(data);
+  });
 
-  exec(
-      'scanimage --mode=Color --resolution=300 -p  > ' + filePath,
-      function (error, stdout, stderr) {
-        if (error) {
-          console.log('!!!!!!error!!!!!');
-          console.log(error);
-        }
-        if (stderr) {
-          console.log('!!!!!stderr!!!!!!!');
-          console.log(stderr);
-        }
-        if (stdout) {
-          console.log('scan works!');
-          console.log(stdout);
-        }
+  scan.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+    //res.send(data);
+  });
 
-
-        exports.convertImage(res,fileName);
-
-
-      }
-  );
+  scan.on('close', function (code) {
+    console.log('child process exited with code ' + code);
+    res.send('child process exited with code ' + code);
+    exports.convertImage(res,fileName);
+  });
 
 };

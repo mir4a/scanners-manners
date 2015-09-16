@@ -15,4 +15,5 @@
 
 //= require lib/jquery-2.1.3.min
 //= require lib/bootstrap.min
+//= require lib/socket.io-1.3.5
 //= require main

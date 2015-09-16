@@ -40,7 +40,9 @@ var passportConf = require('./config/passport');
 /**
  * Create Express server.
  */
-var app = express();
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 /**
  * Connect to MongoDB.
@@ -118,7 +120,9 @@ app.get('/account/unlink/:provider', passportConf.isAuthenticated, userControlle
  * Scanner routes
  */
 app.get('/scan', scanController.index);
-app.post('/scanImage', scanController.scanImage)
+//app.post('/scanImage', scanController.scanImage);
+scanController.init(app,io);
+
 
 
 /**
@@ -205,7 +209,8 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), function() {
+
+server.listen(app.get('port'), function() {
   console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
 });
 

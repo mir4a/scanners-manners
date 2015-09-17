@@ -3,6 +3,8 @@ $(document).ready(function() {
   // Place JavaScript code here...
 
 
+  var $result = $('#result');
+
   $('#scan_form').submit(function(e) {
     e.preventDefault();
 
@@ -20,7 +22,7 @@ $(document).ready(function() {
 
       postForm.done(function(data) {
         if (data) {
-          $('#result').prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>');
+          $result.prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>');
         }
       });
 
@@ -31,7 +33,7 @@ $(document).ready(function() {
   var socket = io.connect('http://localhost:3000');
   socket.on('news', function (data) {
     console.log(data);
-    $('#result').prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>');
+    $result.prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>');
     socket.emit('my other event', { my: 'data' });
   });
 
@@ -42,7 +44,7 @@ $(document).ready(function() {
 
   socket.on('scan:start', function (data) {
     scanStartDate = new Date();
-    $('#result')
+    $result
       .prepend('<li class="list-group-item list-group-item-danger">' + data + ' at:' + scanStartDate + '</li>')
   });
 
@@ -53,19 +55,22 @@ $(document).ready(function() {
 
   socket.on('scan:end', function(data) {
     scanEndDate = new Date();
-    var scanSeconds = (scanEndDate - scanStartDate)/(1000),
-      scanTime,
-      scanMin;
-    if (scanSeconds > 60) {
-      scanMin = scanSeconds/60;
-      scanTime = scanMin.toFixed() + ' minutes and ' + (scanMin - Math.floor(scanMin)) + ' seconds';
+    var diff = scanEndDate - scanStartDate,
+        sec = diff/1000,
+        min = Math.floor(sec/60),
+        minH,
+        scanTime;
+
+    if (sec > 60) {
+      minH = min === 1 ? min + ' minute ' : min + ' minutes ';
+      scanTime = minH + ' and ' + Math.ceil(sec - (min*60)) + ' seconds';
     } else {
-      scanTime = scanSeconds + ' seconds';
+      scanTime = sec + ' seconds';
     }
 
 
     $progress.css('width', '0');
-    $('#result')
+    $result
       .prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>')
       .prepend('<li class="list-group-item list-group-item-danger">Scanning finished at: ' + scanEndDate + '</li>')
       .prepend('<li class="list-group-item list-group-item-danger">Scanning time is: ' + scanTime + '</li>');

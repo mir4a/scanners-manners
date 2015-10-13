@@ -5,12 +5,17 @@ $(document).ready(function() {
 
   var $result = $('#result');
 
+  var $title = $('html head title'),
+      titleDefault = $title.text();
+
   $('#scan_form').submit(function(e) {
     e.preventDefault();
 
     var $form = $(this),
         patt = new RegExp('^[a-zA-Z0-9_-]*$','g'),
         $fileNameInput = $form.find('[name=fileName]'),
+        $resolutionInput = $form.find('[name=scanResolution]'),
+        resolution = $resolutionInput.val(),
         _csrf = $form.find('[name=_csrf]').val(),
         fileName = $fileNameInput.val(),
         validState = !!fileName.match(patt);
@@ -18,7 +23,7 @@ $(document).ready(function() {
     toggleInputValidation.call($fileNameInput, validState);
 
     if (validState) {
-      var postForm = $.post('/scanImage', {_csrf: _csrf, fileName: fileName});
+      var postForm = $.post('/scanImage', {_csrf: _csrf, fileName: fileName, resolution: resolution });
 
       postForm.done(function(data) {
         if (data) {
@@ -43,6 +48,7 @@ $(document).ready(function() {
     scanEndDate;
 
   socket.on('scan:start', function (data) {
+    $title.text('Scanning: ' + $('[name=fileName]').val());
     scanStartDate = new Date();
     $result
       .prepend('<li class="list-group-item list-group-item-danger">' + data + ' at:' + scanStartDate + '</li>')
@@ -50,6 +56,7 @@ $(document).ready(function() {
 
   socket.on('scan', function (progress) {
     console.log(progress);
+    $title.text(progress + ' of ' + $('[name=fileName]').val() + ' scanned…');
     $progress.css('width', progress);
   });
 
@@ -70,6 +77,7 @@ $(document).ready(function() {
 
 
     $progress.css('width', '0');
+    $title.text(titleDefault);
     $result
       .prepend('<li class="list-group-item list-group-item-danger">' + data + '</li>')
       .prepend('<li class="list-group-item list-group-item-danger">Scanning finished at: ' + scanEndDate + '</li>')

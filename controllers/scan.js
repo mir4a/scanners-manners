@@ -68,7 +68,8 @@ exports.init = function (app, io) {
 
 
   app.post('/scanImage', function(req, res, cb) {
-    var fileName = req.body.fileName || 'testFileName';
+    var fileName = req.body.fileName || 'testFileName',
+        resolution = req.body.resolution || '300';
 
     socketIO.emit('scan:start', 'Start scanning: ' + fileName);
 
@@ -76,7 +77,8 @@ exports.init = function (app, io) {
 
     var writeStream = fs.createWriteStream(filePath);
 
-    var scan = spawn('scanimage', ['--mode=Color', '--resolution=300', '-p']);
+    // TODO: Add settings
+    var scan = spawn('scanimage', ['--mode=Color', '--resolution=' + resolution, '-p']);
 
     scan.stdout.on('data', function (data) {
       //console.log('stdout: ' + data);

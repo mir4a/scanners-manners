@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  .page-header
+    h3 Insane Polling
+  form(method='POST' id='polling_form')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .clearfix
+      .row
+        .col-sm-4
+          .form-group
+            label(for="pollingCurl") Set polling cUrl
+            input.form-control(type='text', name='pollingCurl', id='pollingCurl', placeholder='File name', autofocus, required)
+        .col-sm-4
+          .form-group
+            label(for='pollingInterval') Set interval in minutes
+            input(type='number', name='pollingInterval', id='pollingInterval')
+    .form-group
+      button.scan_btn.btn.btn-lg.btn-success#scan_btn Start polling

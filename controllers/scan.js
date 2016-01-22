@@ -78,7 +78,7 @@ exports.init = function (app, io) {
     var writeStream = fs.createWriteStream(filePath);
 
     // TODO: Add settings
-    var scan = spawn('scanimage', ['--mode=Color', '--resolution=' + resolution, '-p']);
+    var scan = scanimageApi(['--mode=Color', '--resolution=' + resolution, '-p']);
 
     scan.stdout.on('data', function (data) {
       //console.log('stdout: ' + data);
@@ -99,4 +99,23 @@ exports.init = function (app, io) {
       exports.convertImage(res,fileName);
     });
   });
+
+  //app.get('/scanPreview', function(req, res, next) {
+  //
+  //  var preview = scanimageApi(['--preview=yes']);
+  //
+  //  preview.stdout.on('data', function(data) {
+  //    res.write(data);
+  //  });
+  //
+  //  preview.on('close', function(code){
+  //    res.end();
+  //  });
+  //
+  //});
 };
+
+
+function scanimageApi(args){
+  return spawn('scanimage', args);
+}
